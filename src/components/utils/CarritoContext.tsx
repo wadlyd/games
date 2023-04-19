@@ -1,38 +1,37 @@
-import React, { ReactNode, createContext, useState } from 'react';
-import { ProductAdded } from '../Models';
+import React, { ReactNode, createContext, useState } from "react";
+import { ProductAdded } from "../Models";
 
-// Crear el contexto para el carrito
 // export const CartContext = createContext<null | any>(null);
 
-
-
 export const CartContext = createContext<{
-    cartItems: ProductAdded[];
-    addToCart: (productAdded: ProductAdded) => void;
-    gemCount: number;
-  }>({
-    cartItems: [],
-    addToCart: () => {},
-    gemCount: 0,
-  });
+  cartItems: ProductAdded[];
+  addToCart: (productAdded: ProductAdded) => void;
+  gemCount: number;
+}>({
+  cartItems: [],
+  addToCart: () => {},
+  gemCount: 3,
+});
 
-// Crear el componente del contexto del carrito
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [gemCount, setGemCount] = useState<number>(3); // Cantidad de gemas disponibles
+  const [gemCount, setGemCount] = useState<number>(3);
   const [cartItems, setCartItems] = useState<ProductAdded[]>([]); // Items en el carrito
 
-  // Función para agregar un item al carrito
   const addToCart = (productAdded: ProductAdded) => {
     // Verificar si ya existe el item en el carrito
-    const existingItem  = cartItems.find(item => item.id === productAdded.id);
-    if (existingItem) {
-        setCartItems([...cartItems, productAdded]);
-        setGemCount(gemCount - 1);
+    const existingItemIndex = cartItems.findIndex(
+      (item) => item.id === productAdded.id
+    );
+    if (existingItemIndex !== -1) {
+      const updatedCartItems = [...cartItems];
+      updatedCartItems[existingItemIndex].precio += productAdded.precio;
+      setCartItems([...cartItems, productAdded]);
+      setGemCount(gemCount - 1);
     }
 
     // Verificar si se ha alcanzado el límite de gemas disponibles
     if (gemCount === 0) {
-      return; // Si no hay gemas disponibles, no permitir agregar más items
+      return;
     }
 
     // Verificar si se ha alcanzado el límite de una poción por categoría
@@ -43,20 +42,16 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       return acc;
     }, 0);
     if (categoryCount === 1) {
-      return; // Si ya hay una poción de esa categoría en el carrito, no permitir agregar más
+      return;
     }
 
-    // Agregar el item al carrito y actualizar las gemas disponibles
     setCartItems([...cartItems, productAdded]);
     setGemCount(gemCount - 1);
   };
+  console.log(addToCart);
 
-  // Función para finalizar la compra
-  const finishPurchase = () => {
-    // Realizar aquí la lógica para finalizar la compra, como calcular el total de gemas gastadas
-    // y validar las restricciones gubernamentales y de la esposa de 🧙‍♂️
-
-    // Luego de finalizar la compra, reiniciar el estado del carrito y las gemas disponibles
+  const makePurchase = () => {
+    // to do
     setCartItems([]);
     setGemCount(3);
   };
@@ -67,7 +62,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         gemCount,
         cartItems,
         addToCart,
-        // finishPurchase,
+        // makePurchase,
       }}
     >
       {children}

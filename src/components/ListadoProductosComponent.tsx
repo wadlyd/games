@@ -3,13 +3,13 @@ import React, { useState, useEffect, useContext } from "react";
 import { Producto, ProductAdded } from "./Models";
 import ButtonAvailable from "./BtnAvailable";
 import { CartContext } from "./utils/CarritoContext";
+import DisableButton from "./DisableBtn";
 // import {CarritoContext} from "./utils/AddToCart"
-// import DisableButton from "./DisableBtn";
 
-const ListadoProductosComponent = ({ product }: {product: ProductAdded}) => {
+const ListadoProductosComponent = ({ product }: { product: ProductAdded }) => {
   const [productos, setProductos] = useState([]);
 
-  const { addToCart } = useContext(CartContext);
+  const { addToCart, gemCount } = useContext(CartContext);
 
   const handleAddToCart = () => {
     addToCart(product); // Llamar a la función addToCart con el producto actual
@@ -54,19 +54,16 @@ const ListadoProductosComponent = ({ product }: {product: ProductAdded}) => {
         <p className="pr-16 text-slate-200 font-thin mt-1 text-xs">
           {producto.descripcion}
         </p>
-        {/* {gemasDisponibles >= 1? */}
-
-        <div className="mt-3">
-          <ButtonAvailable onClick={handleAddToCart} />
-        </div>
-        {/* : */}
-        {/* <div className="mt-3">
-          <DisableButton />
-        </div> */}
-        {/* } */}
-        {/* <div>
-          <DisableButton />
-        </div> */}
+        {gemCount >= 1 ? (
+          <div className="mt-3">
+            <ButtonAvailable onClick={handleAddToCart} />
+          </div>
+        ) : (
+          <div className="mt-3">
+            <DisableButton />
+          </div>
+        )}
+        
       </div>
     );
   });
@@ -76,6 +73,6 @@ const ListadoProductosComponent = ({ product }: {product: ProductAdded}) => {
       <ul>{productsList}</ul>
     </div>
   );
-}
+};
 
 export default ListadoProductosComponent;
