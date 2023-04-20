@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext, useState } from "react";
 // import axios from "axios";
 import { Producto, ProductAdded } from "./Models";
 import ButtonAvailable from "./BtnAvailable";
@@ -6,30 +6,72 @@ import { CartContext } from "./utils/CarritoContext";
 import DisableButton from "./DisableBtn";
 // import {CarritoContext} from "./utils/AddToCart"
 
-const ListadoProductosComponent = ({ product }: { product: ProductAdded }) => {
-  const [productos, setProductos] = useState([]);
+const ListadoProductosComponent = ({
+  productos,
+}: {
+  productos: ProductAdded[];
+}) => {
+  // const [productos, setProductos] = useState([]);
 
-  const { addToCart, gemCount } = useContext(CartContext);
+  // const { gemCount } = useContext(CartContext);
 
-  const handleAddToCart = () => {
-    addToCart(product); // Llamar a la función addToCart con el producto actual
+  const [gemCount, setGemCount] = useState<number>(3);
+  const [cartItems, setCartItems] = useState<Producto[]>([]); // Items en el carrito
+  //   const addToCart = (producto: Producto) => {
+  //     // Verificar si ya existe el item en el carrito
+  //     // const existingItemIndex = cartItems.findIndex(
+  //     //   (item) => item.id === producto.id
+  //     // );
+
+  //       const updatedCartItems = [...cartItems];
+  //       // updatedCartItems[existingItemIndex].precio += producto.precio;
+
+  //       // console.log(producto)
+  //       const addCrt = cartItems.map((item: any) => {
+  //         if (item.categoria !== producto.categoria) {
+  //           return {...item, producto};
+  //         }
+  //         setCartItems((prev)=>prev);
+  //       })
+  // console.log("addcrt", addCrt)
+
+  //       setGemCount(gemCount - 1);
+
+  //     // Verificar si se ha alcanzado el límite de gemas disponibles
+  //     if (gemCount === 0) {
+  //       return;
+  //     }
+
+  //     // Verificar si se ha alcanzado el límite de una poción por categoría
+  //     const categoryCount = cartItems.reduce((acc, cartItem) => {
+  //       if (cartItem.categoria === producto.categoria) {
+  //         return acc + 1;
+  //       }
+  //       return acc;
+  //     }, 0);
+  //     if (categoryCount === 1) {
+  //       return;
+  //     }
+
+  //     // setCartItems([...cartItems, producto]);
+  //     setGemCount(gemCount - 1);
+  //   };
+
+  // const [cartItems, setCartItems] = useState([]);
+
+  const addToCart = (producto: Producto) => {
+    if (
+      cartItems.length >= 3 ||
+      cartItems.some((item) => item.categoria === producto.categoria)
+    ) {
+      // Do not add the product if cart already has 3 items or the same category exists
+      return;
+    }
+
+    setCartItems([...cartItems, producto]);
   };
 
-  useEffect(() => {
-    //fetch data from api
-    fetch("http://localhost:3001/productos")
-      .then((res) => res.json())
-      .then((data) => setProductos(data))
-      .catch((err) => console.error(err));
-  }, []);
-
-  //   axios
-  //     .get("http://localhost:3001/productos")
-  //     .then(function (response) {
-  //       setProductos(response.data);
-  //     })
-  //     .catch((error) => console.log(error));
-  // }, []);
+  console.log(cartItems);
 
   // Consumir el contexto del carrito
   const productsList = productos?.map((producto: Producto) => {
@@ -56,14 +98,13 @@ const ListadoProductosComponent = ({ product }: { product: ProductAdded }) => {
         </p>
         {gemCount >= 1 ? (
           <div className="mt-3">
-            <ButtonAvailable onClick={handleAddToCart} />
+            <ButtonAvailable onClick={() => addToCart(producto)} />
           </div>
         ) : (
           <div className="mt-3">
             <DisableButton />
           </div>
         )}
-        
       </div>
     );
   });
