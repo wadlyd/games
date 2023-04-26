@@ -11,7 +11,7 @@ export const HeaderComponent: React.FC<HeaderComponentProps> = ({
 }) => {
   // const { gemasDisponibles } = useCarrito();
   // Consumir el contexto del carrito
-  const { gemCount, cartItems } = useContext(CartContext);
+  // const {  cartItems } = useContext(CartContext);
 
   return (
     <div className="bg-stone-700 py-4 px-8 flex justify-between items-center sticky top-0 shadow-md z-10">
@@ -19,10 +19,11 @@ export const HeaderComponent: React.FC<HeaderComponentProps> = ({
       <div className="flex gap-2 items-center">
         <img src="./gem.png" alt="Gem imagen" />
         {/* <span>xxx Gemas</span> */}
-        <span> {gemCount} gemas</span>
+        {/* <span> {gemCount} gemas</span> */}
       </div>
       <button className="text-white hover:underline" onClick={goToCart}>
-        Ver Carrito {cartItems.length}
+        Ver Carrito 
+        {/* {cartItems.length} */}
       </button>
     </div>
   );
